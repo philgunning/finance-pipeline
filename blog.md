@@ -62,8 +62,6 @@ Obviously data validation is a huge aspect of data engineering but beyond the sc
 Here we will just test that the returned data from our first step is not an empty DataFrame.
 
 ```
-from dagster import op, Out
-
 @op(out=Out(bool))
 def validate_data(context, data):
     if data.empty:
@@ -99,3 +97,53 @@ Currently our data looks like this:
 |2023-03-14 09:31:00-04:00|	296.579987|	296.789886|	294.809998|	295.149994|	22967|
 |2023-03-14 09:32:00-04:00|	295.170013|	295.549988|	294.679993|	295.190002|	22126|
 |...|	...|	...|	...|	...|	...|
+
+Our next step is transforming the data with some enrichments. We will add a cumulative value of all the trades for a ticker along with a 15 minute rolling VWAP, and add tehm to the DataFrame.
+
+```
+@op(ins={"data", In(dagster_type=pd.DataFrame)},
+    out=Out(pd.DataFrame))
+def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
+    # Ensure that data is not empty
+    assert context.resources.validate_data(data)
+    
+    # Calculate the rolling 15-minute VWAP
+    vwap = data['Close'].rolling('15min').apply(lambda x: (x * data['Volume']).sum() / x.sum())
+    
+    # Calculate the cumulative dollar value of all trades
+    dollar_value = (data['Close'] * data['Volume']).cumsum()
+    
+    # Add the VWAP and dollar value columns to the data DataFrame
+    data['VWAP'] = vwap
+    data['DollarValue'] = dollar_value
+    
+    # Return the updated DataFrame
+    return data
+```
+
+## Write Down
+
+For the purposes of this blog we will just be saving our data locally to a csv, however you can include code here to store the data in any format locally or remotely in the cloud based on your needs, just as you would without the `op` decorated function. This is also the first `op` where we use the `context` argument and access some of the pipeline functionality for logging, here just to write a job success message.
+
+We will store our data in a csv per day with a naming convention to match that logic.
+
+```
+@op(ins={"data", In(dagster_type=pd.DataFrame)})
+def write_to_csv(context, data):
+    # Get the daily date of the data
+    filepath = f"{str(data.index[0].date())}.csv"
+    
+    # Write the transformed data to a CSV file
+    data.to_csv(filepath)
+
+    # Log a message to confirm that the data has been written to the file
+    context.log.info(f"Data written to file: {filepath}")
+```
+
+## Building a Pipeline
+
+We now have all of the required component functions to build a pipeline that will capture, clean, validate, transform and load some market data for us.
+
+Time to put them together in a pipeline.
+
+All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a dagster `graph`.
