@@ -70,7 +70,6 @@ def validate_data(context, data):
         raise ValueError("Dataframe is empty")
     else:
         return True
-
 ```
 
 This op takes a single input argument, `data`, which should be the DataFrame returned by the `download_data` op. 
@@ -94,9 +93,9 @@ Now that we have some data that is ready to work with, we can add our own metric
 
 Currently our data looks like this:
 
-Open	|High	|Low	|Close	|Volume|
-Datetime|					
-2023-03-14 09:30:00-04:00|	295.970001|	297.450012|	295.970001|	296.579987|	110684|
-2023-03-14 09:31:00-04:00|	296.579987|	296.789886|	294.809998|	295.149994|	22967|
-2023-03-14 09:32:00-04:00|	295.170013|	295.549988|	294.679993|	295.190002|	22126|
-...|	...|	...|	...|	...|	...|
+|Datetime |Open	|High	|Low	|Close	|Volume|	
+|--|--|--|--|--|--|				
+|2023-03-14 09:30:00-04:00|	295.970001|	297.450012|	295.970001|	296.579987|	110684|
+|2023-03-14 09:31:00-04:00|	296.579987|	296.789886|	294.809998|	295.149994|	22967|
+|2023-03-14 09:32:00-04:00|	295.170013|	295.549988|	294.679993|	295.190002|	22126|
+|...|	...|	...|	...|	...|	...|
