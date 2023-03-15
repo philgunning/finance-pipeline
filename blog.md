@@ -107,21 +107,35 @@ def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
     # Ensure that data is not empty
     assert context.resources.validate_data(data)
     
-    # Calculate the rolling 15-minute VWAP
-    vwap = data['Close'].rolling('15min').apply(lambda x: (x * data['Volume']).sum() / x.sum())
+    # Function to determine rolling VWAP
+    def rolling_vwap(df):
+        df['Datetime'] = pd.to_datetime(df['Datetime'])
+        df.set_index('Datetime', inplace=True)
+        df['Typical Price'] = (df['High'] + df['Low'] + df['Close']) / 3
+        df['Cumulative TPV'] = df['Typical Price'] * df['Volume']
+        df['Cumulative Volume'] = df['Volume'].cumsum()
+        df['Rolling TPV'] = df['Cumulative TPV'].rolling('15min', min_periods=1).sum()
+        df['Rolling Volume'] = df['Volume'].rolling('15min', min_periods=1).sum()
+        vwap = df['Rolling TPV'] / df['Rolling Volume']
+        return vwap
+    
+    # Add the rolling VWAP to the DataFrame
+    data['VWAP'] = rolling_vwap(data.reset_index())
+    
+    # Forward fill the last VWAP rows to replace NaN values
+    data['VWAP'].ffill(inplace=True)
     
     # Calculate the cumulative dollar value of all trades
     dollar_value = (data['Close'] * data['Volume']).cumsum()
     
-    # Add the VWAP and dollar value columns to the data DataFrame
-    data['VWAP'] = vwap
+    # Add the dollar value column to the data DataFrame
     data['DollarValue'] = dollar_value
     
     # Return the updated DataFrame
     return data
 ```
 
-## Write Down
+### Write Down
 
 For the purposes of this blog we will just be saving our data locally to a csv, however you can include code here to store the data in any format locally or remotely in the cloud based on your needs, just as you would without the `op` decorated function. This is also the first `op` where we use the `context` argument and access some of the pipeline functionality for logging, here just to write a job success message.
 
