@@ -109,14 +109,12 @@ def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
     
     # Function to determine rolling VWAP
     def rolling_vwap(df):
-        df['Datetime'] = pd.to_datetime(df['Datetime'])
-        df.set_index('Datetime', inplace=True)
-        df['Typical Price'] = (df['High'] + df['Low'] + df['Close']) / 3
-        df['Cumulative TPV'] = df['Typical Price'] * df['Volume']
+        df['Price'] = (df['High'] + df['Low'] + df['Close']) / 3
+        df['Cumulative PV'] = df['Price'] * df['Volume']
         df['Cumulative Volume'] = df['Volume'].cumsum()
-        df['Rolling TPV'] = df['Cumulative TPV'].rolling('15min', min_periods=1).sum()
+        df['Rolling PV'] = df['Cumulative PV'].rolling('15min', min_periods=1).sum()
         df['Rolling Volume'] = df['Volume'].rolling('15min', min_periods=1).sum()
-        vwap = df['Rolling TPV'] / df['Rolling Volume']
+        vwap = df['Rolling PV'] / df['Rolling Volume']
         return vwap
     
     # Add the rolling VWAP to the DataFrame
@@ -145,7 +143,7 @@ We will store our data in a csv per day with a naming convention to match that l
 @op(ins={"data", In(dagster_type=pd.DataFrame)})
 def write_to_csv(context, data):
     # Get the daily date of the data
-    filepath = f"{str(data.index[0].date())}.csv"
+    filepath = f"./output/{str(data.index[0].date())}.csv"
     
     # Write the transformed data to a CSV file
     data.to_csv(filepath)
