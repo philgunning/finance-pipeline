@@ -133,7 +133,14 @@ def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
     # Return the updated DataFrame
     return data
 ```
+After transformation our data now looks like this:
 
+Datetime	Open	High	Low	Close	Volume	VWAP	DollarValue
+|--|--|--|--|--|--|--|--|								
+|2023-03-15 09:30:00-04:00	|292.510010	|293.600006	|292.279999	|292.950012	|132267	|292.943339	|3.874762e+07|
+|2023-03-15 09:31:00-04:00	|293.070007	|294.093689	|293.031189	|293.390015	|22140	|293.023869	|4.524327e+07|
+|2023-03-15 09:32:00-04:00	|293.220001	|293.839996	|293.079987	|293.429993	|11611	|293.053671	|4.865029e+07|
+|...|	...|	...|	...|	...|	...|    ...|    ...|
 ### Write Down
 
 For the purposes of this blog we will just be saving our data locally to a csv, however you can include code here to store the data in any format locally or remotely in the cloud based on your needs, just as you would without the `op` decorated function. This is also the first `op` where we use the `context` argument and access some of the pipeline functionality for logging, here just to write a job success message.
