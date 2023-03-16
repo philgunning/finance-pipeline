@@ -46,22 +46,23 @@ def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
     # Ensure that data is not empty
     assert context.resources.validate_data(data)
     
-    # Function to determine rolling VWAP
-    def rolling_vwap(df):
-        df['Price'] = (df['High'] + df['Low'] + df['Close']) / 3
-        df['Cumulative PV'] = df['Price'] * df['Volume']
-        df['Cumulative Volume'] = df['Volume'].cumsum()
-        df['Rolling PV'] = df['Cumulative PV'].rolling('15min', min_periods=1).sum()
-        df['Rolling Volume'] = df['Volume'].rolling('15min', min_periods=1).sum()
-        vwap = df['Rolling PV'] / df['Rolling Volume']
-        return vwap
+    # Columns needed to determine rolling VWAP
+    data['Typical Price'] = (data['High'] + data['Low'] + data['Close']) / 3
+    data['Cumulative TPV'] = data['Typical Price'] * data['Volume']
+    data['Cumulative Volume'] = data['Volume'].cumsum()
+    data['Rolling TPV'] = data['Cumulative TPV'].rolling('15min', min_periods=1).sum()
+    data['Rolling Volume'] = data['Volume'].rolling('15min', min_periods=1).sum()
     
     # Add the rolling VWAP to the DataFrame
-    data['VWAP'] = rolling_vwap(data)
+    data['VWAP'] = data['Rolling TPV'] / data['Rolling Volume']
     
-    # Forward fill the last VWAP rows to replace NaN values
-    data['VWAP'].ffill(inplace=True)
-    
+    # Remove uynneeded intermediete columns
+    data.drop(['Typical Price', 
+               'Rolling Volume', 
+               'Cumulative TPV', 
+               'Cumulative Volume', 
+               'Rolling TPV'], axis=1, inplace=True)
+
     # Calculate the cumulative dollar value of all trades
     dollar_value = (data['Close'] * data['Volume']).cumsum()
     
