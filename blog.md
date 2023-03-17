@@ -166,4 +166,15 @@ We now have all of the required component functions to build a pipeline that wil
 
 Time to put them together in a pipeline.
 
-All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a dagster `graph`.
+All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a dagster `graph`. A `graph` is a set of interconnected ops or sub-graphs. While individual ops typically perform simple tasks, ops can be assembled into a graph to accomplish complex tasks.
+
+Our simple graph defionition will look like this:
+```
+@graph
+def pipeline():
+    # Run for Netflix ticker
+    data = download_data("NFLX")
+    data = clean_data(data)
+    data = transform_data(data)
+    write_to_csv(data)
+```

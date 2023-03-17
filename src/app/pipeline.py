@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from dagster import op, In, Out
+from dagster import op, In, Out, graph
 import yfinance as yf
 import pandas as pd
 
@@ -82,3 +82,11 @@ def write_to_csv(context, data):
 
     # Log a message to confirm that the data has been written to the file
     context.log.info(f"Data written to file: {filepath}")
+
+@graph
+def pipeline():
+    # Run for Netflix ticker
+    data = download_data("NFLX")
+    data = clean_data(data)
+    data = transform_data(data)
+    write_to_csv(data)
