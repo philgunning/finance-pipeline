@@ -189,6 +189,8 @@ We now have all of the required component functions to build a pipeline that wil
 
 Time to put them together in a pipeline.
 
+### Graphs
+
 All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a dagster `graph`. A `graph` is a set of interconnected ops or sub-graphs. While individual ops typically perform simple tasks, ops can be assembled into a graph to accomplish complex tasks.
 
 We will have one `graph` for data collection that executes for one ticker, and another `graph` that will contain more than one version of our collection `graph` to execute and then pass all of the outputs into our write down function.
@@ -218,17 +220,8 @@ def running_pipeline():
     write_to_csv([data_nflx, data_dis])
 ```
 
+### Jobs
 
-Our stored csv now contains all the data from our pipeline run:
-```
-Datetime,Open,High,Low,Close,Volume,Ticker,VWAP,DollarValue
-2023-03-16 09:30:00-04:00,304.75,305.0,303.3601989746094,303.5299987792969,154501,NFLX,303.96339925130206,46895688.34140015
-2023-03-16 09:30:00-04:00,92.66999816894531,92.80000305175781,92.44499969482422,92.56999969482422,147401,DIS,92.60500081380208,13644910.525016785
-2023-03-16 09:31:00-04:00,303.45001220703125,304.2698974609375,302.54998779296875,302.6023864746094,15654,NFLX,303.8877174435357,51632626.09927368
-2023-03-16 09:31:00-04:00,92.52999877929688,92.5999984741211,92.19999694824219,92.19999694824219,19711,DIS,92.57295710757401,15462264.664863586
-...
-
-```
 Jobs are the main unit of execution and monitoring in Dagster. The core of a `job` is a `graph` of `op`s connected via data dependencies.
 
 Finally, we will export our `running_pipeline` to a dagster `job`, named `pipeline_job`. This will allow us to name the executable job for the UI and add a brief description for readability to anyone interacting with the UI.
@@ -254,5 +247,23 @@ It should show a few `INFO` context meessages fefore completing the start up and
 
 We can now access the UI on our browser.
 
+It provides information on our deployed pipeline code and will flag errors at the highest level like below:
+![](DeploymentError.png"Deployment error on initial development.")
+
+## Pipeline Run
+...
+
+Our stored csv now contains all the data from our pipeline run:
+```
+Datetime,Open,High,Low,Close,Volume,Ticker,VWAP,DollarValue
+2023-03-16 09:30:00-04:00,304.75,305.0,303.3601989746094,303.5299987792969,154501,NFLX,303.96339925130206,46895688.34140015
+2023-03-16 09:30:00-04:00,92.66999816894531,92.80000305175781,92.44499969482422,92.56999969482422,147401,DIS,92.60500081380208,13644910.525016785
+2023-03-16 09:31:00-04:00,303.45001220703125,304.2698974609375,302.54998779296875,302.6023864746094,15654,NFLX,303.8877174435357,51632626.09927368
+2023-03-16 09:31:00-04:00,92.52999877929688,92.5999984741211,92.19999694824219,92.19999694824219,19711,DIS,92.57295710757401,15462264.664863586
+...
+
+```
+
+And available for whatever use case we desire.
 
 For more information about deploying a dagster pipeline in a productgion environment, check out the docs here: [Deploying Dagster](https://docs.dagster.io/deployment/open-source#deploying-dagster)
