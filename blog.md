@@ -251,8 +251,35 @@ It provides information on our deployed pipeline code and will flag errors at th
 
 ![Deployment Error](./DeploymentError.png)
 
-## Pipeline Run
-...
+We can click into the details of the error, giving us insight of the problem to be fixed. 
+
+![Error Details](./DeploymentErrorDetail.png)
+
+Once fixed, we can use the reload function of the Dagit UI to quickly reload the codebase, ensure the fix worked and progress with our pipeline deployment.
+
+Clicking through to the jobs allows us to see the architecture of our pipeline, with the nested graphs collapsed by default giving a high level view of what order of execution will run when we launch the job.
+
+![Pipeline Overview](./PipelineOverview.png)
+
+We can expand these out to see the individual ops that makle up the graphs for the job, incluiding the datatypes expected and produceed by each op.
+
+![Pipeline Details](./PipelineDetails.png)
+
+Moving to the launchpad in the UI, we can launch a run of our pipeline job and have real time execution status visualised in the browser along with a constant streasm of log information underneath.
+
+![Pipeline Running](./PipelineRunning.png)
+
+If the pipeline throws an error mid execution it will show you exactly which step it occured on, and continue to execute non dependant jobs further downstream or in parrallel executions.
+
+![Pipeline Error](./PipelineRunningError.png)
+
+If the error is temporary, such as a remote API refusing connection for too many requests, you can reexecute the pipeline from just that step. Retaining all the cached data from the other ops already completed without the need to start the pipeline execution from the start.
+
+With the log info writer we added to some of our ops we can see them in the UI as the ops complete.
+
+![Log View](./LogView.png)
+
+After the run completes for each sub-graph, both outputs are sent to the last op of the parent graph and writes the data down to csv.
 
 Our stored csv now contains all the data from our pipeline run:
 ```
