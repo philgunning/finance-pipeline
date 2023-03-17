@@ -249,7 +249,7 @@ We can now access the UI on our browser.
 
 It provides information on our deployed pipeline code and will flag errors at the highest level like below:
 
-![Deployment Error](DeploymentError.png"Deployment error on initial development.")
+![Deployment Error](./DeploymentError.png"Deployment error on initial development.")
 
 ## Pipeline Run
 ...
