@@ -4,11 +4,17 @@ Data pipelines are an essential tool for managing and processing data in modern 
 
 Pipelines help in automating the data processing, making it easier and quicker to collect, store, and analyze data. By breaking down data processing into smaller, more manageable tasks, pipelines make it easier to maintain and troubleshoot the system.
 
-In this blog we will look at building a simple data pipeline using `dagster` and `yfinance`, collecting some simple market data, validating that the expected data is present, cleaning and enriching it, before saving the resultant data to disk and using it in a notebook to represent an end user accessing the data we would schedule for collection in our pipeline.
+In this blog we will look at building a simple data pipeline using `dagster` and `yfinance` to:
+
+- colelct some simple market data
+- validate that the expected data is present
+- clean and enrich it
+- saving the resultant data to disk
+- show the data (external to the pipeline functionality)
 
 Installation of libraries used in our `venv`:
 ```
-pip install pandas yfinance dagster dagit
+pip install pandas yfinance dagster dagit matplotlib
 ```
 
 ## Building a Simple Pipeline
