@@ -21,7 +21,7 @@ We can specify input and output definitions for any `op` (explained in the next 
 
 The first step in building our data pipeline is to define a data source that downloads historical data for a specific ticker using yfinance. We will use the `yfinance.download()` function to pull historical data in 1 minute increments for that ticker.
 
-Our first `dagster` component is an `op`. They are reusable components that can be copmbined together to create more complex pipelines, they take one or more inputs, do a task and produce one or more outputs. 
+Our first `dagster` component is an `op`. They are reusable components that can be combined together to create more complex pipelines, they take one or more inputs, do a task and produce one or more outputs. 
 
 An `op` function takes two arguments: context and inputs. The context argument provides access to information about the pipeline and the execution environment, such as loggers, configuration data, and metadata about the pipeline. The `ins` argument is a dictionary that contains the inputs to the op.
 
@@ -294,4 +294,4 @@ Datetime,Open,High,Low,Close,Volume,Ticker,VWAP,DollarValue
 
 And available for whatever use case we desire.
 
-For more information about deploying a dagster pipeline in a productgion environment, check out the docs here: [Deploying Dagster](https://docs.dagster.io/deployment/open-source#deploying-dagster)
+For more information about deploying a dagster pipeline in a production environment, check out the docs here: [Deploying Dagster](https://docs.dagster.io/deployment/open-source#deploying-dagster)
