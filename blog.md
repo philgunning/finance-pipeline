@@ -8,7 +8,7 @@ Pipelines help in automating the data processing, making it easier and quicker t
 
 In this blog we will look at building a simple data pipeline using `dagster` and `yfinance` to:
 
-- colelct some simple market data
+- collect some simple market data
 - validate that the expected data is present
 - clean and enrich it
 - saving the resultant data to disk
