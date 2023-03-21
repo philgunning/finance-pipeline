@@ -1,10 +1,10 @@
 # Data Pipelines in Python
 
-Data pipelines are an essential tool for managing and processing data in modern software systems. A data pipeline is a set of interconnected components that process data as it flows through the system. These components can include data sources, write down functions, transformation functions, and other data processing operations, such as validation and cleaning. Pipelines are a way to automate the process of collecting, transforming, and analyzing data. They are a series of steps that take raw data, clean it, process it, and store it in a way that can be easily analyzed or used in other applications. Pipelines are particularly useful when dealing with large amounts of data or when working with data that needs to be constantly updated.
+Data pipelines are an essential tool for managing and processing data in modern software systems. A data pipeline is a set of interconnected components that process data as it flows through the system. These components can include data sources, write down functions, transformation functions, and other data processing operations, such as validation and cleaning. Pipelines are a way to automate the process of collecting, transforming, and analysing data. They are a series of steps that take raw data, clean it, process it, and store it in a way that can be easily analysed or used in other applications. Pipelines are particularly useful when dealing with large amounts of data or when working with data that needs to be constantly updated.
 
 They offer an improvement in behaviour over legacy ETL methods such as cron scheduling in testability, scalability, mnodularisation and ease of development and debugging in real time.
 
-Pipelines help in automating the data processing, making it easier and quicker to collect, store, and analyze data. By breaking down data processing into smaller, more manageable tasks, pipelines make it easier to maintain and troubleshoot the system.
+Pipelines help in automating the data processing, making it easier and quicker to collect, store, and analyse data. By breaking down data processing into smaller, more manageable tasks, pipelines make it easier to maintain and troubleshoot the system.
 
 In this blog we will look at building a simple data pipeline using `dagster` and `yfinance` to:
 
@@ -143,7 +143,7 @@ def transform_data(context, data: pd.DataFrame) -> pd.DataFrame:
     # Add the rolling VWAP to the DataFrame
     data['VWAP'] = data['Rolling TPV'] / data['Rolling Volume']
 
-    # Remove uynneeded intermediete columns
+    # Remove unneeded intermediete columns
     data.drop(['Typical Price',
                'Rolling Volume',
                'Cumulative TPV',
@@ -248,7 +248,7 @@ On your CLI run the following command to spin up the dagster daemon processes:
 $ dagster dev -f pipeline.py -p 8080
 ```
 
-It should show a few `INFO` context meessages fefore completing the start up and show this:
+It should show a few `INFO` context messages before completing the start up and show this:
 ```
 2023-03-17 16:48:12 +0000 - dagit - INFO - Serving dagit on http://127.0.0.1:8080 in process 19696
 ```
@@ -269,27 +269,27 @@ Clicking through to the jobs allows us to see the architecture of our pipeline, 
 
 ![Pipeline Overview](./PipelineOverview.png)
 
-We can expand these out to see the individual ops that makle up the graphs for the job, incluiding the datatypes expected and produceed by each op.
+We can expand these out to see the individual ops that makle up the graphs for the job, incluiding the datatypes expected and produced by each op.
 
 ![Pipeline Details](./PipelineDetails.png)
 
-Moving to the launchpad in the UI, we can launch a run of our pipeline job and have real time execution status visualised in the browser along with a constant streasm of log information underneath.
+Moving to the launchpad in the UI, we can launch a run of our pipeline job and have real time execution status visualised in the browser, along with a constant stream of log information underneath.
 
 ![Pipeline Running](./PipelineRunning.png)
 
-If the pipeline throws an error mid execution it will show you exactly which step it occured on, and continue to execute non dependant jobs further downstream or in parrallel executions.
+If the pipeline throws an error mid execution it will show you exactly which step it occurred on, and continue to execute non-dependant jobs further downstream or in parallel executions.
 
 ![Pipeline Error](./PipelineRunningError.png)
 
-If the error is temporary, such as a remote API refusing connection for too many requests, you can reexecute the pipeline from just that step. Retaining all the cached data from the other ops already completed without the need to start the pipeline execution from the start.
+If the error is temporary, such as a remote API refusing connection for too many requests, you can re-execute the pipeline from just that step. Retaining all the cached data from the other ops already completed without the need to start the pipeline execution from the start.
 
-With the log info writer we added to some of our ops we can see them in the UI as the ops complete.
+With the log info writer that was added to some of our ops, we can see the output in the UI as the ops complete.
 
 ![Log View](./LogView.png)
 
 After the run completes for each sub-graph, both outputs are sent to the last op of the parent graph and writes the data down to csv.
 
-Our stored csv now contains all the data from our pipeline run:
+Our stored csv now contains all the data from our pipeline run, and is available for whatever use case we desire.:
 ```
 Datetime,Open,High,Low,Close,Volume,Ticker,VWAP,DollarValue
 2023-03-16 09:30:00-04:00,304.75,305.0,303.3601989746094,303.5299987792969,154501,NFLX,303.96339925130206,46895688.34140015
@@ -299,8 +299,6 @@ Datetime,Open,High,Low,Close,Volume,Ticker,VWAP,DollarValue
 ...
 
 ```
-
-And available for whatever use case we desire.
 
 Here we can run a script that will show the data generated by the pipeline:
 ```
