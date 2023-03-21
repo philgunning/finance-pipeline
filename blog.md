@@ -21,19 +21,19 @@ pip install pandas yfinance dagster dagit matplotlib
 
 ## Building a Simple Pipeline
 
-Before beginning to code our pipeline there are `definitions` available for input and outputs of function in dagster, that allow high level type validation as the pipeline runs.
+Before beginning to code our pipeline there are `definitions` available for input and outputs of function in Dagster, that allow high level type validation as the pipeline runs.
 
-We can specify input and output definitions for any `op` (explained in the next section) using the `In` and `Out` classes from the dagster library. This helps to ensure that the inputs and outputs of the `op` are correctly typed and validated by the dagster framework at runtime.
+We can specify input and output definitions for any `op` (explained in the next section) using the `In` and `Out` classes from the `dagster` library. This helps to ensure that the inputs and outputs of the `op` are correctly typed and validated by the Dagster framework at runtime.
 
 ### Data Sourcing
 
 The first step in building our data pipeline is to define a data source that downloads historical data for a specific ticker using yfinance. We will use the `yfinance.download()` function to pull historical data in 1 minute increments for that ticker.
 
-Our first `dagster` component is an `op`. They are reusable components that can be combined together to create more complex pipelines, they take one or more inputs, do a task and produce one or more outputs. 
+Our first Dagster component is an `op`. They are reusable components that can be combined together to create more complex pipelines, they take one or more inputs, do a task and produce one or more outputs. 
 
 An `op` function takes two arguments: context and inputs. The context argument provides access to information about the pipeline and the execution environment, such as loggers, configuration data, and metadata about the pipeline. The `ins` argument is a dictionary that contains the inputs to the op.
 
-The output of an op is defined using the `Out` class from the dagster library. An output definition specifies the name and type of the output produced by the `op`.
+The output of an op is defined using the `Out` class from the Dagster library. An output definition specifies the name and type of the output produced by the `op`.
 
 Here is our simple data sourcing function:
 
@@ -199,7 +199,7 @@ Time to put them together in a pipeline.
 
 ### Graphs
 
-All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a dagster `graph`. A `graph` is a set of interconnected ops or sub-graphs. While individual ops typically perform simple tasks, ops can be assembled into a graph to accomplish complex tasks.
+All of our `op` functions are in a file called `ops.py`. We can import them into a new file where we define our pipeline execution steps, this will be done in a Dagster `graph`. A `graph` is a set of interconnected ops or sub-graphs. While individual ops typically perform simple tasks, ops can be assembled into a graph to accomplish complex tasks.
 
 We will have one `graph` for data collection that executes for one ticker, and another `graph` that will contain more than one version of our collection `graph` to execute and then pass all of the outputs into our write down function.
 
@@ -232,7 +232,7 @@ def running_pipeline():
 
 Jobs are the main unit of execution and monitoring in Dagster. The core of a `job` is a `graph` of `op`s connected via data dependencies.
 
-Finally, we will export our `running_pipeline` to a dagster `job`, named `pipeline_job`. This will allow us to name the executable job for the UI and add a brief description for readability to anyone interacting with the UI.
+Finally, we will export our `running_pipeline` to a Dagster `job`, named `pipeline_job`. This will allow us to name the executable job for the UI and add a brief description for readability to anyone interacting with the UI.
 
 ```
 pipeline_job = running_pipeline.to_job(
@@ -243,7 +243,7 @@ Only with jobs can we set up scheduling, sensors (triggers to execute other pipe
 
 ## Running Dagit UI
 
-On your CLI run the following command to spin up the dagster daemon processes:
+On your CLI run the following command to spin up the Dagster daemon processes:
 ```
 $ dagster dev -f pipeline.py -p 8080
 ```
@@ -333,4 +333,4 @@ plt.show()
 ![Netflix Close vs. VWAP](./output.png)
 
 
-For more information about deploying a dagster pipeline in a production environment, check out the docs here: [Deploying Dagster](https://docs.dagster.io/deployment/open-source#deploying-dagster)
+For more information about deploying a Dagster pipeline in a production environment, check out the docs here: [Deploying Dagster](https://docs.dagster.io/deployment/open-source#deploying-dagster)
